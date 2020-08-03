@@ -23,12 +23,13 @@ if __name__ ==  '__main__':
     for port in usbs:
         p = SDS011(port=port, push_mqtt=False, interval=10)
         processs.append(p)
-
+    # for p in processs:
+    #     p.set_active()
+        
     while True:
         for p in processs:
             try:
                 p.run_passive()
-                # p.set_active()
                 # p.run_query()
             except Exception as e:
                 print(f'Error: {p.name} with {e}')
