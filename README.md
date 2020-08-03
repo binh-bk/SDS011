@@ -4,5 +4,5 @@ Python Interface with Nova Fitness SDS011 sensor, running multiple sensors at on
 
 
 ## Datasheet
-- Datasheet SDS011 [online](https://cdn-reichelt.de/documents/datenblatt/X200/SDS011-DATASHEET.pdf) or in datasheet folder
+- Datasheet SDS011 [online](https://www-sd-nf.oss-cn-beijing.aliyuncs.com/%E5%AE%98%E7%BD%91%E4%B8%8B%E8%BD%BD/SDS011%20laser%20PM2.5%20sensor%20specification-V1.4.pdf) or in datasheet folder
 - Communication Protocol: check out datasheet folder
