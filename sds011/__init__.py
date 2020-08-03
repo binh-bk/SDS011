@@ -16,7 +16,7 @@ time.tzset()
 
 # MQTT host, users
 mqtt = '192.168.1.100'  # change this
-topic = 'sensor/sps30' # and this
+topic = 'sensor/sds011' # and this
 auth = {'username': 'mqtt_user', 'password': 'mqtt_password'} # and these two
 
 
