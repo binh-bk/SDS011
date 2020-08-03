@@ -59,6 +59,23 @@ p = SDS011(port=port, push_mqtt=True, interval=60)
 ```
 ## Data analysis
 
+- analyze data by each sensor using different moving average (to smooth out the data)
+<p>
+    <img src="img/sds_reading.png">
+</p>
+- or plot PM2.5 and PM10
+<p>
+    <img src="img/sds_pms_reading.png">
+</p>
+- or to compare several sensors at one (in which this script is very useful)
+<p>
+    <img src="img/sds_four_sensors.png">
+</p>
+- or to simpify by only the mean and standard deviation from multiple sensors
+<p>
+    <img src="img/sds_avg_sensors.png">
+</p>
+
 
 ## Datasheet
 - Datasheet SDS011 [online](https://www-sd-nf.oss-cn-beijing.aliyuncs.com/%E5%AE%98%E7%BD%91%E4%B8%8B%E8%BD%BD/SDS011%20laser%20PM2.5%20sensor%20specification-V1.4.pdf) or in datasheet folder
