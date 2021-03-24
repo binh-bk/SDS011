@@ -9,16 +9,24 @@ import os
 import json
 import socket
 import paho.mqtt.publish as publish
+import requests
+from requests.auth import HTTPBasicAuth
 
 
-os.environ['TZ'] = 'Asia/Ho_Chi_Minh'
-time.tzset()
+#os.environ['TZ'] = 'Asia/Ho_Chi_Minh'
+#time.tzset()
 
 # MQTT host, users
 mqtt = '192.168.1.100'  # change this
 topic = 'sensor/sds011' # and this
 auth = {'username': 'mqtt_user', 'password': 'mqtt_password'} # and these two
 
+# Domoticz host
+domoticzserver="127.0.0.1:8080" # change Domoticz server address
+domoticzusername = "" # and username
+domoticzpassword = "" # and password
+device_index_pm25 = 1 # change to idx of PM2.5 custom sensor
+device_index_pm10 = 2 # change to idx of PM10 custom sensor
 
 def time_(): return int(time.time())
 
@@ -82,6 +90,47 @@ def push_mqtt_server(data):
         pass
     return None
 
+def push_domo_server(data):
+    id_, pm25, pm10 = data
+    id_ = f'sds011_{id_}'
+    header = ['time', 'sensor', 'pm25', 'pm10']
+    domoticz_url = format("http://%s/json.htm?type=command&param=udevice&idx=%s&nvalue=0&svalue=%s"
+        %(
+        domoticzserver, 
+        device_index_pm25, 
+        pm25, 
+        ))	
+    try:
+        resp = requests.get(domoticz_url, auth=HTTPBasicAuth(domoticzusername, domoticzpassword))
+    except requests.HTTPError as e:
+        print("Domoticz HTTP error", e.reason)
+    except requests.ConnectionError:
+        print("Domoticz Request failed!")
+    else:
+        if resp.status_code == 200:
+            print("Domoticz PM2.5 update successfull!")
+        else:
+            print("domoticz PM2.5 update failed:", resp.status_code)
+    domoticz_url = format("http://%s/json.htm?type=command&param=udevice&idx=%s&nvalue=0&svalue=%s"
+        %(
+        domoticzserver, 
+        device_index_pm10, 
+        pm10, 
+        ))	
+    try:
+        resp = requests.get(domoticz_url, auth=HTTPBasicAuth(domoticzusername, domoticzpassword))
+    except requests.HTTPError as e:
+        print("Domoticz HTTP error", e.reason)
+    except requests.ConnectionError:
+        print("Domoticz Request failed!")
+    else:
+        if resp.status_code == 200:
+            print("Domoticz PM10 update successfull!")
+        else:
+            print("domoticz PM10 update failed:", resp.status_code)
+    return None
+
+
 
 class SDS011(object):
     '''attributes for the SDS011 sensors'''
@@ -99,7 +148,7 @@ class SDS011(object):
     lastFanOn = 0
     name = 'sds'
 
-    def __init__(self, port, name=name, interval=60, save_data=True, push_mqtt=False):
+    def __init__(self, port, name=name, interval=60, save_data=True, push_mqtt=False, push_domo=False):
         '''initiate a serial port object'''
 
         self.port = port
@@ -107,6 +156,7 @@ class SDS011(object):
         self.INVL = interval
         self.save_data = save_data
         self.push_mqtt = push_mqtt
+        self.push_domo = push_domo
         self.passive = False
         self.isFanOn = False
         # self.INVL = INVL
@@ -283,6 +333,9 @@ class SDS011(object):
 
                     if self.push_mqtt:
                         push_mqtt_server(data)
+                    
+                    if self.push_domo:
+                        push_domo_server(data)
 
                     self._send_cmd(self._call_mode('set_sleep'))
                     self.lastSample = time_()
@@ -320,6 +373,9 @@ class SDS011(object):
 
                     if self.push_mqtt:
                         push_mqtt_server(data)
+                    if self.push_domo:
+                        push_domo_server(data)
+
                     self.lastSample = time_()
 
         else:
@@ -327,7 +383,7 @@ class SDS011(object):
 
 
 if __name__ == '__main__':
-    p1 = SDS011(port='/dev/ttyUSB0', push_mqtt=True)
+    p1 = SDS011(port='/dev/ttyUSB1', push_mqtt=True)
     while True:
         p1.run_passive()
     # p1.set_passive()
