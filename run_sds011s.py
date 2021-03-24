@@ -1,5 +1,5 @@
 #! /usr/bin/python3
-# Binh Nguyen, Feb26, 2020
+# Binh Nguyen & Ties Korstanje, Mar 24, 2021
 # run multiple SDS011
 
 import subprocess
@@ -21,7 +21,7 @@ if __name__ ==  '__main__':
     usbs = get_usb()
     processs = list()
     for port in usbs:
-        p = SDS011(port=port, push_mqtt=False, interval=10)
+        p = SDS011(port=port, push_mqtt=False, push_domo=True, interval=60)
         processs.append(p)
     # for p in processs:
     #     p.set_active()
@@ -29,8 +29,8 @@ if __name__ ==  '__main__':
     while True:
         for p in processs:
             try:
-                p.run_passive()
-                # p.run_query()
+                #p.run_passive()
+                p.run_query()
             except Exception as e:
                 print(f'Error: {p.name} with {e}')
                 continue
