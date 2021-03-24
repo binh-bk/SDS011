@@ -1,5 +1,5 @@
 #! /usr/bin/python3
-# Binh Nguyen, Feb 24, 2020
+# Binh Nguyen & Ties Korstanje, Mar 24, 2021
 # python interface to work with SDS011 air quality sensor
 
 
